@@ -12,12 +12,12 @@ namespace Lesson2aGrains
     {
         public Task<string> GetReality()
         {
-            throw new NotImplementedException();
+            return Task.FromResult("ggggg");
         }
 
         public Task Listen(string sentence)
         {
-            throw new NotImplementedException();
+            return TaskDone.Done;
         }
     }
 }

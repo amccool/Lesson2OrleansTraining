@@ -8,6 +8,8 @@ namespace OrleansBasicUnitTests
 {
     [DeploymentItem("OrleansConfigurationForTesting.xml")]
     [DeploymentItem("ClientConfigurationForTesting.xml")]
+    [DeploymentItem("OrleansProviders.dll")]
+    [DeploymentItem("Lesson2aGrains.dll")]
     [TestClass]
     public class TalkingUnitTest : TestingSiloHost
     {
