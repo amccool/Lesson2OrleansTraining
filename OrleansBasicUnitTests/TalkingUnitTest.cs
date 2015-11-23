@@ -2,12 +2,28 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Orleans.TestingHost;
 using Lesson2aGrainInterfaces;
+using System.IO;
 
 namespace OrleansBasicUnitTests
 {
+    [DeploymentItem("OrleansConfigurationForTesting.xml")]
+    [DeploymentItem("ClientConfigurationForTesting.xml")]
     [TestClass]
     public class TalkingUnitTest : TestingSiloHost
     {
+        public TalkingUnitTest()
+            : base(new TestingSiloOptions
+            {
+                StartFreshOrleans = true,
+                SiloConfigFile = new FileInfo("OrleansConfigurationForTesting.xml"),
+            },
+            new TestingClientOptions()
+            {
+                ClientConfigFile = new FileInfo("ClientConfigurationForTesting.xml")
+            })
+        {
+        }
+
         [ClassCleanup]
         public static void ClassCleanup()
         {
@@ -18,22 +34,23 @@ namespace OrleansBasicUnitTests
         }
 
         [TestMethod]
-        public async void BuildGrainTest()
+        public void BuildGrainTest()
         {
             var grain = GrainFactory.GetGrain<IPerson>("Bill Llama");
 
             // This will create and call a Hello grain with specified 'id' in one of the test silos.
-            await grain.Listen("peter piper picked a pick of peppers");
+            grain.Listen("peter piper picked a pick of peppers").Wait();
         }
 
         [TestMethod]
-        public async void IHeardPeterTest()
+        public void IHeardPeterTest()
         {
             var grain = GrainFactory.GetGrain<IPerson>("Bill Llama");
 
-            var words = await grain.GetReality();
+            var words = grain.GetReality();
+            words.Wait();
 
-            Assert.AreEqual<string>("peter piper picked a pick of peppers", words);
+            Assert.AreEqual<string>("peter piper picked a pick of peppers", words.Result);
         }
 
     }
